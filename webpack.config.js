@@ -3,7 +3,7 @@ var webpack = require("webpack");
 var cssnext = require('postcss-cssnext');
 
 module.exports = {
-  devtool: process.env.PROD_ENV == 'production' ? null : 'inline-source-map',
+  devtool: process.env.NODE_ENV == 'production' ? null : 'inline-source-map',
 
   entry: "./src/index.js",
   output: {
