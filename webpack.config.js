@@ -7,7 +7,7 @@ module.exports = {
   entry: "./src/index.js",
   output: {
     path: path.resolve(__dirname, "dist"),
-    publicPath: "/dist/",
+    publicPath: "",
     filename: "bundle.js"
   },
   module: {
@@ -56,6 +56,10 @@ module.exports = {
       browsers: ['last 10 versions', 'IE > 8'],
     })
   ],
+
+  // plugins: [
+  //   process.env.new webpack.optimize.UglifyJsPlugin({compressor: {warnings: false, drop_console: true}}),
+  // ],
 
   devServer: {
     publicPath: "/dist/",
