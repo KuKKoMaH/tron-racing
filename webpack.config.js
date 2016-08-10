@@ -1,8 +1,9 @@
 var path = require("path");
+var webpack = require("webpack");
 var cssnext = require('postcss-cssnext');
 
 module.exports = {
-  devtool: 'inline-source-map',
+  devtool: process.env.PROD_ENV == 'production' ? null : 'inline-source-map',
 
   entry: "./src/index.js",
   output: {
@@ -35,12 +36,17 @@ module.exports = {
         loader: 'svg-sprite?' + JSON.stringify({
           name: '[name]_[hash]',
           prefixize: true,
-          // spriteModule: 'utils/my-custom-sprite'
         })
       },
       { test: /\.woff$/, loader: 'file?mimetype=application/font-woff&name=fonts/[name].[ext]' },
       { test: /\.woff2$/, loader: 'file?mimetype=application/font-woff2&name=fonts/[name].[ext]' },
       { test: /\.[ot]tf$/, loader: 'file?mimetype=application/octet-stream&name=fonts/[name].[ext]' }
+    ],
+    postLoaders: [
+      {
+        include: path.resolve(__dirname, 'node_modules/pixi.js'),
+        loader: 'transform?brfs'
+      }
     ]
   },
   node: {
@@ -57,9 +63,14 @@ module.exports = {
     })
   ],
 
-  // plugins: [
-  //   process.env.new webpack.optimize.UglifyJsPlugin({compressor: {warnings: false, drop_console: true}}),
-  // ],
+  plugins: [
+    // new webpack.DefinePlugin({
+    //   'process.env': {
+    //     'NODE_ENV': JSON.stringify('production')
+    //   }
+    // })
+    // process.env.new webpack.optimize.UglifyJsPlugin({compressor: {warnings: false, drop_console: true}}),
+  ],
 
   devServer: {
     publicPath: "/dist/",
