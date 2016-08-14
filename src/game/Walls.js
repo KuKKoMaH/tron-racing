@@ -2,6 +2,7 @@ import { GAME_HEIGHT, GAME_WIDTH, LINE_WIDTH, DIR_LEFT, DIR_RIGHT, DIR_TOP, DIR_
 
 export default class Walls {
   constructor(config) {
+    this.config = config;
     this.width = config.size[0] || GAME_WIDTH;
     this.height = config.size[1] || GAME_HEIGHT;
     this.lineWidth = config.width || LINE_WIDTH;
@@ -9,6 +10,14 @@ export default class Walls {
     this.walls = new Array(this.width);
     for(var i = 0; i < this.width; i++){
       this.walls[i] = new Array(this.height);
+    }
+  }
+
+  reset(){
+    for(var i = 0; i < this.width; i++){
+      for(var j = 0; j < this.height; j++){
+        this.walls[i][j] = false;
+      }
     }
   }
 

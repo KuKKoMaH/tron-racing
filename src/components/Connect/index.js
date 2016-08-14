@@ -47,15 +47,15 @@ export default class Connect extends Component {
   }
 
   render() {
-    return <div className={style.wrapper}>
-      <div className={style.content}>
+    return (
+      <div className={style.wrapper}>
         <div className={style.text}>YOUR ID:</div>
         <div className={style.peer_id}>
           {this.props.peerId
             ? <span ref="peerId" onClick={this.copyId}>{this.props.peerId}</span>
             : <Spinner size={70}/>
           }
-          </div>
+        </div>
 
         <form className={style.form} onSubmit={this.connect}>
           <div className={style.input_wrapper}>
@@ -64,9 +64,11 @@ export default class Connect extends Component {
           </div>
           <button className={classNames(style.button, style.orange)}>CONNECT</button>
         </form>
-        <button className={classNames(style.button, style.cyan, style.single)} onClick={this.selectSingle}>SINGLE PLAYER</button>
+        <button className={classNames(style.button, style.cyan, style.single)} onClick={this.selectSingle}>
+          SINGLE PLAYER
+        </button>
         <Help />
       </div>
-    </div>;
+    );
   }
 }

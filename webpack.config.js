@@ -15,11 +15,11 @@ module.exports = {
     loaders: [
       {
         test: /\.styl$/,
-        loaders: ["style", "css?modules&localIdentName=[name]__[hash:base64:5]", "postcss", "stylus"]
+        loaders: ["style", "css?modules&localIdentName=[local]__[hash:base64:5]", "postcss", "stylus"]
       },
       {
         test: /\.css$/,
-        loader: "style!css?localIdentName=[name]__[hash:base64:5]"
+        loader: "style!css?localIdentName=[local]__[hash:base64:5]"
       },
       {
         test: /\.jsx*$/,
@@ -45,7 +45,7 @@ module.exports = {
     postLoaders: [
       {
         include: path.resolve(__dirname, 'node_modules/pixi.js'),
-        loader: 'transform?brfs'
+        loader: 'transform/cacheable?brfs'
       }
     ]
   },

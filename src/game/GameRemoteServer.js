@@ -1,5 +1,5 @@
 import { EVENT_CREATE, EVENT_PLAYER_READY, EVENT_COUNTDOWN, EVENT_TURN, EVENT_TICK, EVENT_KILL,
-  EVENT_END} from './constants';
+  EVENT_END, EVENT_RESTART} from './constants';
 import GameAbstractServer from './GameAbstractServer';
 
 export default class GameRemoteServer extends GameAbstractServer{
@@ -23,6 +23,11 @@ export default class GameRemoteServer extends GameAbstractServer{
           break;
         case EVENT_END:
           this.game.end(data.player);
+          this.emit(EVENT_END);
+          break;
+        case EVENT_RESTART:
+          this.game.reset();
+          break;
       }
     });
   }

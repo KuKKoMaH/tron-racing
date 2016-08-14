@@ -27,6 +27,7 @@ export default class GameSingleServer extends GameAbstractServer{
 
     this.server.on(EVENT_END, player => {
       this.game.end(player);
+      this.emit(EVENT_END);
     })
   }
 
@@ -36,5 +37,11 @@ export default class GameSingleServer extends GameAbstractServer{
 
   ready(id = this.peerId) {
     this.server.ready(id);
+  }
+
+  reset(){
+    super.reset();
+    this.server.reset();
+    this.server.start();
   }
 }

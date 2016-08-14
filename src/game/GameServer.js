@@ -1,10 +1,13 @@
+import Events from '../utils/Events';
 import Player from './Player';
 import Walls from './Walls';
 import { PLAYERS, GAME_WIDTH, GAME_HEIGHT, GAME_FRAMERATE, GAME_COUNTDOWN, PLAYERS_MAX, DIR_BOTTOM, DIR_LEFT,
   DIR_RIGHT, DIR_TOP, EVENT_END, EVENT_KILL, EVENT_COUNTDOWN, EVENT_START, EVENT_CREATE, EVENT_TICK } from './constants';
 
-export default class GameServer{
+export default class GameServer extends Events{
   constructor(config){
+    super();
+
     const playersCount = Math.min(config.players.length, PLAYERS_MAX);
     this.allPlayers = [];
     this.indexPlayers = {};
@@ -20,14 +23,13 @@ export default class GameServer{
     this.players = [...this.allPlayers];
     this.width = config.width || GAME_WIDTH;
     this.height = config.height || GAME_HEIGHT;
-    this.startDelay = config.countdown || GAME_COUNTDOWN;
+    this.startDelay = config.countdown !== undefined ? config.countdown : GAME_COUNTDOWN;
     this.walls = new Walls({size:[this.width, this.height]});
 
     this.framerate = config.framerate || GAME_FRAMERATE;
     this._tickTime = 1000 / this.framerate;
 
     this.loop = null;
-    this.events = {};
 
     setTimeout(() => {
       this.emit(EVENT_CREATE, [this.getConfig()]);
@@ -62,8 +64,15 @@ export default class GameServer{
     clearTimeout(this.loop);
   }
 
+  reset(){
+    this.players = [...this.allPlayers];
+    this.players.forEach(p => p.reset());
+    this.walls.reset();
+    this.winner = null;
+  }
+
   turn(playerId, direction){
-    this.indexPlayers[playerId].turn(direction);
+    if(this.loop) this.indexPlayers[playerId].turn(direction);
   }
 
   tick(){
@@ -118,19 +127,6 @@ export default class GameServer{
         p.direction
       ]
     })
-  }
-
-  emit(event, options){
-    if(Array.isArray(this.events[event])){
-      this.events[event].forEach(cb => cb.apply(this, options));
-    }
-  }
-
-  on(event, cb){
-    if(!Array.isArray(this.events[event])){
-      this.events[event] = [];
-    }
-    this.events[event].push(cb);
   }
 
   ready(pId){

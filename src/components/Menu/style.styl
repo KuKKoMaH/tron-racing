@@ -1,0 +1,23 @@
+.menu
+  height: 20px
+  line-height: 20px
+  font-size: 20px
+  margin-top: 12px
+  color: c-cyan
+  letter-spacing: 3px
+
+.item
+  cursor: pointer
+  text-shadow: 0 0 5px rgba(c-cyan, 0.5)
+  transition: all .1s ease-out
+
+  &:before
+    content: '|'
+    display: inline-block
+    margin: 0 10px
+
+  &:first-child:before
+    content: ''
+
+  &:hover
+    text-shadow: 0 0 10px rgba(c-cyan, 0.8)

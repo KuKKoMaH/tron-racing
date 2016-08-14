@@ -2,11 +2,14 @@ import React, { Component, PropTypes } from 'react';
 import style from './style.styl';
 import GameServer from './../../game/GameServer';
 import GameSingleServer from './../../game/GameSingleServer';
-import { EVENT_CREATE } from '../../game/constants';
+import { EVENT_CREATE, EVENT_END } from '../../game/constants';
+
+import Menu from '../Menu';
 
 export default class GamePeer extends Component {
   static propTypes = {
-    peerId: PropTypes.string
+    peerId: PropTypes.string,
+    onMenu: PropTypes.func,
   };
 
   static defaultProps = {
@@ -15,6 +18,12 @@ export default class GamePeer extends Component {
 
   constructor(props) {
     super(props);
+
+    this.state = {
+      ended: false
+    };
+
+    this.onRestart = this.onRestart.bind(this);
   };
 
   componentDidMount(){
@@ -25,16 +34,25 @@ export default class GamePeer extends Component {
       this.refs.gameCanvas.appendChild(view);
       this.game.ready();
     });
+    this.game.on(EVENT_END, () => {
+      this.setState({ended: true});
+    });
   };
 
   componentWillUnmount(){
-    this.gameClient.destroy();
+    this.game.destroy();
   };
+
+  onRestart(){
+    this.game.reset();
+  }
 
   render(){
     return (
-      <div className={style.wrapper}>
+      <div>
         <div className={style.field} ref="gameCanvas"></div>
+        <div className={style.menu}></div>
+        <Menu visible={this.state.ended} onRestart={this.onRestart} onMenu={this.props.onMenu} />
       </div>
     );
   }

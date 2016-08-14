@@ -1,12 +1,13 @@
+
+import Events from '../utils/Events';
 import GameRender from './GameRender';
 
-export default class GameAbstractServer{
+export default class GameAbstractServer extends Events{
   constructor(peerId, connect){
+    super();
     this.peerId = peerId;
     this.connect = connect;
     this.game = null;
-
-    this.events = {};
 
     this.onKeyDown = this.onKeyDown.bind(this);
     window.addEventListener('keydown', this.onKeyDown);
@@ -41,16 +42,7 @@ export default class GameAbstractServer{
     this.game.countdown(value);
   }
 
-  emit(event, options){
-    if(Array.isArray(this.events[event])){
-      this.events[event].forEach(cb => cb.apply(this, options));
-    }
-  }
-
-  on(event, cb){
-    if(!Array.isArray(this.events[event])){
-      this.events[event] = [];
-    }
-    this.events[event].push(cb);
+  reset(){
+    this.game.reset();
   }
 }

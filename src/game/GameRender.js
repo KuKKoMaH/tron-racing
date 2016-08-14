@@ -112,9 +112,23 @@ export default class GameRender {
   }
 
   end(player){
-    const text = this.createText("GAME OVER");
-    console.log(player);
-    this.stage.addChild(text);
+    this.message = this.createText("GAME OVER");
+    this.stage.addChild(this.message);
+  }
+
+  reset(){
+    this.walls.clear();
+    this.players.forEach((p, i) => {
+      const player = this.config.players[i];
+      const half_size = player.size / 2;
+      p.beginFill(player.color, 1);
+      p.drawRect(-half_size, -half_size, player.size, player.size);
+      p.x = player.position[0];
+      p.y = player.position[1];
+    });
+    this.state = null;
+    this.stage.removeChild(this.message);
+    this.render();
   }
 
   setState(state) {

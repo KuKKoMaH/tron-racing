@@ -2,6 +2,7 @@ import { DIR_BOTTOM, DIR_LEFT, DIR_RIGHT, DIR_TOP, PLAYER_SPEED, PLAYER_SIZE } f
 
 export default class Player {
     constructor(id, config) {
+        this.config = config;
         this.id = id;
         this.position = this.last_position = config.position;
         this.size = config.size || PLAYER_SIZE;
@@ -55,6 +56,12 @@ export default class Player {
 
     ready() {
         this.isReady = true;
+    }
+
+    reset() {
+        this.position = this.last_position = this.config.position;
+        this.direction = this.config.direction;
+        this.isKilled = false;
     }
 
     turn(direction) {

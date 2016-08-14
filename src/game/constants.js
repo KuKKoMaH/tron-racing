@@ -33,3 +33,4 @@ export const EVENT_TICK     = 'EVENT_TICK';
 export const EVENT_PLAYER_READY = 'EVENT_PLAYER_READY';
 export const EVENT_ALL_READY = 'EVENT_ALLREADY';
 export const EVENT_CREATE   = 'EVENT_CREATE';
+export const EVENT_RESTART   = 'EVENT_RESTART';

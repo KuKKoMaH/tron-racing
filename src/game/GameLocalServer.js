@@ -1,15 +1,15 @@
 import { EVENT_CREATE, EVENT_PLAYER_READY, EVENT_START, EVENT_COUNTDOWN, EVENT_TICK, EVENT_TURN,
-  EVENT_KILL, EVENT_END } from './constants';
+  EVENT_KILL, EVENT_END, EVENT_RESTART } from './constants';
 import GameAbstractServer from './GameAbstractServer';
+import GameServer from './GameServer';
 
 export default class GameLocalServer extends GameAbstractServer{
-  constructor(peerId, connect, server){
+  constructor(peerId, connect){
     super(peerId, connect);
 
-    this.server = server;
+    this.server = new GameServer({players: [ peerId, connect.peer ], countdown: 0});
 
     this.server.on(EVENT_CREATE, config => {
-      console.log(EVENT_CREATE);
       this.create(config);
       this.send(EVENT_CREATE, {config});
       this.emit(EVENT_CREATE, [this.game.getView()]);
@@ -31,8 +31,9 @@ export default class GameLocalServer extends GameAbstractServer{
     });
 
     this.server.on(EVENT_END, player => {
-      this.send(EVENT_END, {player});
       this.game.end(player);
+      this.send(EVENT_END, {player});
+      this.emit(EVENT_END);
     });
 
     this.connect.on('data', data => {
@@ -53,6 +54,13 @@ export default class GameLocalServer extends GameAbstractServer{
 
   ready(id = this.peerId) {
     this.server.ready(id);
+  }
+
+  reset(){
+    super.reset();
+    this.send(EVENT_RESTART);
+    this.server.reset();
+    this.server.start();
   }
 
   send(type, data){
