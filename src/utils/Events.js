@@ -15,4 +15,8 @@ export default class Events{
     }
     this.events[event].push(cb);
   }
+
+  off(event){
+    this.events[event] = [];
+  }
 }

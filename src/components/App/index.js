@@ -21,7 +21,6 @@ export default class App extends Component {
   }
 
   componentDidMount(){
-    console.log('mount');
     this.peers = new Peers();
     this.peers.getId().then(id => this.setState({id}));
     this.peers.on('connect', connect => {
@@ -44,7 +43,6 @@ export default class App extends Component {
   }
 
   returnToMenu(){
-    console.log(this.peers);
     this.peers.disconnect();
   }
 

@@ -23,7 +23,6 @@ export default class GameSingle extends Component {
     };
 
     this.onRestart = this.onRestart.bind(this);
-    this.onMenu = this.onMenu.bind(this);
   }
 
   componentDidMount(){
@@ -45,14 +44,12 @@ export default class GameSingle extends Component {
 
   componentWillUnmount(){
     this.game.destroy();
+    this.game.off(EVENT_CREATE);
+    this.game.off(EVENT_END);
   }
 
   onRestart(){
     this.game.reset();
-  }
-
-  onMenu(){
-
   }
 
   render(){
