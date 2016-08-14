@@ -1,12 +1,14 @@
 import Peer from 'peerjs';
 import Events from './Events';
 
-const key = '7o1bq8h0nuqv9529';
-
 export default class Peers extends Events{
   constructor(){
     super();
-    this.peer = new Peer({key});
+    this.peer = new Peer({
+      host: location.hostname,
+      port: location.port,
+      path: '/peers'
+    });
     this._id = null;
     this._connect = null;
 

@@ -7,7 +7,7 @@ export default class GameLocalServer extends GameAbstractServer{
   constructor(peerId, connect){
     super(peerId, connect);
 
-    this.server = new GameServer({players: [ peerId, connect.peer ], countdown: 0});
+    this.server = new GameServer({players: [ peerId, connect.peer ], countdown: 2});
 
     this.server.on(EVENT_CREATE, config => {
       this.create(config);
