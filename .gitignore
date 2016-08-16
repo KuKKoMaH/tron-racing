@@ -2,3 +2,5 @@
 node_modules/
 stats.json
 npm-debug.log
+dist/fonts
+dist/bundle.js
