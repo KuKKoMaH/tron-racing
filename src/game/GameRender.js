@@ -1,3 +1,5 @@
+import PIXI from 'pixi.js';
+
 export default class GameRender {
   constructor(config) {
     // console.log(config);

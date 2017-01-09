@@ -1,7 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import style from './style.styl';
-import GameServer from './../../game/GameServer';
-import GameSingleServer from './../../game/GameSingleServer';
 import { EVENT_CREATE, EVENT_END } from '../../game/constants';
 
 import Menu from '../Menu';
@@ -27,15 +25,20 @@ export default class GamePeer extends Component {
   };
 
   componentDidMount(){
-    this.server = new GameServer({players: [ this.props.peerId], countdown: 1});
-    this.game = new GameSingleServer(this.props.peerId, this.server);
+    require.ensure([], () => {
+      const GameServer = require('./../../game/GameServer').default;
+      const GameSingleServer = require('./../../game/GameSingleServer').default;
 
-    this.game.on(EVENT_CREATE, view => {
-      this.refs.gameCanvas.appendChild(view);
-      this.game.ready();
-    });
-    this.game.on(EVENT_END, () => {
-      this.setState({ended: true});
+      this.server = new GameServer({players: [ this.props.peerId], countdown: 1});
+      this.game = new GameSingleServer(this.props.peerId, this.server);
+
+      this.game.on(EVENT_CREATE, view => {
+        this.refs.gameCanvas.appendChild(view);
+        this.game.ready();
+      });
+      this.game.on(EVENT_END, () => {
+        this.setState({ended: true});
+      });
     });
   };
 

@@ -1,8 +1,5 @@
 import React, { Component, PropTypes } from 'react';
 import style from './style.styl';
-import GameServer from './../../game/GameServer';
-import GameRemoteServer from './../../game/GameRemoteServer';
-import GameLocalServer from './../../game/GameLocalServer';
 import { EVENT_CREATE, EVENT_END } from '../../game/constants';
 
 import Menu from '../Menu';
@@ -25,20 +22,26 @@ export default class GameSingle extends Component {
     this.onRestart = this.onRestart.bind(this);
   }
 
-  componentDidMount(){
-    if(this.props.isServer){
-      this.game = new GameLocalServer(this.props.peerId, this.props.connect);
-    }else{
-      this.game = new GameRemoteServer(this.props.peerId, this.props.connect);
-    }
+  componentDidMount() {
+    require.ensure([], () => {
+      const GameServer = require('./../../game/GameServer').default;
+      const GameRemoteServer = require('./../../game/GameRemoteServer').default;
+      const GameLocalServer = require('./../../game/GameLocalServer').default;
 
-    this.game.on(EVENT_CREATE, view => {
-      this.refs.gameCanvas.appendChild(view);
-      this.game.ready();
-    });
+      if (this.props.isServer) {
+        this.game = new GameLocalServer(this.props.peerId, this.props.connect);
+      } else {
+        this.game = new GameRemoteServer(this.props.peerId, this.props.connect);
+      }
 
-    this.game.on(EVENT_END, () => {
-      this.setState({ended: true});
+      this.game.on(EVENT_CREATE, view => {
+        this.refs.gameCanvas.appendChild(view);
+        this.game.ready();
+      });
+
+      this.game.on(EVENT_END, () => {
+        this.setState({ended: true});
+      });
     });
   }
 

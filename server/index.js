@@ -9,7 +9,7 @@ var port = process.env.PORT || 8080;
 var app = express();
 var server = app.listen(port);
 app.use(express.static(__dirname + '/../dist'));
-app.use('/peers', ExpressPeerServer(server, {}));
+app.use('/peers', ExpressPeerServer(server, { allow_discovery: true }));
 
 if (process.env.NODE_ENV != 'production') {
   var webpackDevMiddleware = require('webpack-dev-middleware');

@@ -7,7 +7,8 @@ export default class Peers extends Events{
     this.peer = new Peer({
       host: location.hostname,
       port: location.port,
-      path: '/peers'
+      path: '/peers',
+      debug: 3
     });
     this._id = null;
     this._connect = null;
@@ -17,9 +18,11 @@ export default class Peers extends Events{
     this.idPromise = new Promise((resolve, reject) => {
       this.peer.on('open', id => {
         this._id = id;
+        this.peer.listAllPeers(list => console.log(list));
         resolve(id);
       });
     });
+
 
     this.peer.on('connection', conn => {
       if(!this._connect) {

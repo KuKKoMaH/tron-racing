@@ -1,4 +1,3 @@
-
 import Events from '../utils/Events';
 import GameRender from './GameRender';
 
