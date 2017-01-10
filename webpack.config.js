@@ -1,69 +1,82 @@
-var path = require("path");
-var webpack = require("webpack");
-var cssnext = require('postcss-cssnext');
+const path = require("path");
+const webpack = require("webpack");
+const { CheckerPlugin } = require('awesome-typescript-loader');
 
 module.exports = {
   devtool: process.env.NODE_ENV == 'production' ? null : 'inline-source-map',
 
-  entry: "./src/index.js",
+  entry:  "./src/index.js",
   output: {
-    path: path.resolve(__dirname, "dist"),
+    path:       path.resolve(__dirname, "dist"),
     publicPath: "",
-    filename: "bundle.js"
+    filename:   "bundle.js"
   },
+
+  resolve: {
+    extensions: ['.ts', '.tsx', '.js', '.jsx', '.styl', '.css']
+  },
+
   module: {
-    loaders: [
+    rules: [
       {
         test: /\.styl$/,
-        loaders: ["style", "css?modules&localIdentName=[local]__[hash:base64:5]", "postcss", "stylus"]
+        use:  [
+          "style-loader",
+          {
+            loader:  "css-loader",
+            options: {
+              modules:        true,
+              localIdentName: '[local]__[hash:base64:5]',
+            }
+          },
+          "postcss-loader",
+          {
+            loader:  "stylus-loader",
+            options: {
+              import: [path.resolve(__dirname, "src/static/styles/vars.styl")],
+            }
+          }
+        ]
       },
       {
         test: /\.css$/,
-        loader: "style!css?localIdentName=[local]__[hash:base64:5]"
+        use:  ["style", "css?localIdentName=[local]__[hash:base64:5]"]
       },
       {
-        test: /\.jsx*$/,
+        test:   /\.ts$/,
+        loader: 'awesome-typescript-loader'
+      },
+      {
+        test:    /\.jsx*$/,
         exclude: [/node_modules/, /.+\.config.js/],
-        loader: 'babel',
+        loader:  'babel-loader',
       },
       {
-        test: /\.json$/,
-        include: path.join(__dirname, 'node_modules', 'pixi.js'),
-        loader: 'json',
+        test:    /\.svg$/,
+        use: [
+          {
+            loader:  'svg-sprite-loader?' + JSON.stringify({
+              name:      '[name]_[hash]',
+              prefixize: true,
+            })
+          }
+        ]
       },
-      {
-        test: /\.svg$/,
-        loader: 'svg-sprite?' + JSON.stringify({
-          name: '[name]_[hash]',
-          prefixize: true,
-        })
-      },
-      { test: /\.woff$/, loader: 'file?mimetype=application/font-woff&name=fonts/[name].[ext]' },
-      { test: /\.woff2$/, loader: 'file?mimetype=application/font-woff2&name=fonts/[name].[ext]' },
-      { test: /\.[ot]tf$/, loader: 'file?mimetype=application/octet-stream&name=fonts/[name].[ext]' }
-    ],
-    postLoaders: [
+      {test: /\.woff$/, loader: 'file-loader?mimetype=application/font-woff&name=fonts/[name].[ext]'},
+      {test: /\.woff2$/, loader: 'file-loader?mimetype=application/font-woff2&name=fonts/[name].[ext]'},
+      {test: /\.[ot]tf$/, loader: 'file-loader?mimetype=application/octet-stream&name=fonts/[name].[ext]'},
       {
         include: path.resolve(__dirname, 'node_modules/pixi.js'),
-        loader: 'transform/cacheable?brfs'
-      }
-    ]
+        loader:  'transform-loader/cacheable?brfs'
+      },
+    ],
   },
-  node: {
+  node:   {
     fs: 'empty'
   },
 
-  stylus: {
-    import: [path.resolve(__dirname, "src/static/styles/vars.styl")],
-  },
-
-  postcss: [
-    cssnext({
-      browsers: ['last 10 versions', 'IE > 8'],
-    })
-  ],
-
   plugins: [
+    new CheckerPlugin(),
     // new webpack.DefinePlugin({
     //   'process.env': {
     //     'NODE_ENV': JSON.stringify('production')

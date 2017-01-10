@@ -5,6 +5,10 @@ import { PLAYERS, GAME_WIDTH, GAME_HEIGHT, GAME_FRAMERATE, GAME_COUNTDOWN, PLAYE
   DIR_RIGHT, DIR_TOP, EVENT_END, EVENT_KILL, EVENT_COUNTDOWN, EVENT_START, EVENT_CREATE, EVENT_TICK } from './constants';
 
 export default class GameServer extends Events{
+  /**
+   *
+   * @param {Object} config
+   */
   constructor(config){
     super();
 
