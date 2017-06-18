@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import style from './style.styl';
-import { EVENT_CREATE, EVENT_END } from '../../game/constants';
+import { EVENT_CREATE, EVENT_END } from 'game/server/constants';
 
 import Menu from '../Menu';
 
@@ -24,9 +24,9 @@ export default class GameSingle extends Component {
 
   componentDidMount() {
     require.ensure([], () => {
-      const GameServer = require('./../../game/GameServer').default;
-      const GameRemoteServer = require('./../../game/GameRemoteServer').default;
-      const GameLocalServer = require('./../../game/GameLocalServer').default;
+      const GameServer = require('game/server/Server.ts').default;
+      const GameRemoteServer = require('game/GameRemoteServer').default;
+      const GameLocalServer = require('game/GameLocalServer').default;
 
       if (this.props.isServer) {
         this.game = new GameLocalServer(this.props.peerId, this.props.connect);

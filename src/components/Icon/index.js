@@ -1,16 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import style from './style.styl';
 
-var GLYPHS = {
-  ARROW_LEFT: require('./../../static/img/arrow_left.svg'),
-  ARROW_RIGHT: require('./../../static/img/arrow_right.svg')
+const GLYPHS = {
+  arrow_left:  require('static/img/arrow_left.svg').default,
+  arrow_right: require('static/img/arrow_right.svg').default,
 };
 
 class Icon extends React.Component {
   render() {
-    var glyph = this.props.glyph;
+    const glyph = `#${this.props.glyph}`;
     return (
-      <svg className={style.icon} dangerouslySetInnerHTML={{__html: '<use xlink:href="' + glyph + '"></use>'}}/>
+      <svg className={style.icon}>
+        <use xlinkHref={glyph} />
+      </svg>
     )
   }
 }

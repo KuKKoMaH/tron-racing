@@ -3,8 +3,8 @@ import style from './style.styl';
 import Peers from '../../utils/Peers';
 
 import Connect from '../Connect';
-import GameSingle from '../GameSingle';
-import GamePeer from '../GamePeer';
+import GameSingle from '../GameSingle/GameSingle';
+// import GamePeer from '../GamePeer';
 
 export default class App extends Component {
   constructor(props) {
@@ -48,8 +48,8 @@ export default class App extends Component {
 
   getComponent(){
     switch(this.state.mode){
-      case 'multiplayer': return <GamePeer connect={this.state.connect} peerId={this.state.id}
-                                           isServer={this.state.isServer} onMenu={this.returnToMenu}/>;
+      // case 'multiplayer': return <GamePeer connect={this.state.connect} peerId={this.state.id}
+      //                                      isServer={this.state.isServer} onMenu={this.returnToMenu}/>;
       case 'single': return <GameSingle onMenu={this.returnToMenu}/>;
       default: return <Connect peerId={this.state.id} onConnect={this.onConnect} onSingle={this.onSingle}/>;
     }

@@ -3,7 +3,7 @@ const webpack = require("webpack");
 const { CheckerPlugin } = require('awesome-typescript-loader');
 
 module.exports = {
-  devtool: process.env.NODE_ENV == 'production' ? null : 'inline-source-map',
+  devtool: process.env.NODE_ENV === 'production' ? null : 'inline-source-map',
 
   entry:  "./src/index.js",
   output: {
@@ -13,6 +13,7 @@ module.exports = {
   },
 
   resolve: {
+    modules:    [path.resolve(__dirname, "src"), "node_modules"],
     extensions: ['.ts', '.tsx', '.js', '.jsx', '.styl', '.css']
   },
 
@@ -29,7 +30,12 @@ module.exports = {
               localIdentName: '[local]__[hash:base64:5]',
             }
           },
-          "postcss-loader",
+          {
+            loader:  "postcss-loader",
+            options: {
+              sourceMap: true,
+            }
+          },
           {
             loader:  "stylus-loader",
             options: {
@@ -44,7 +50,7 @@ module.exports = {
       },
       {
         test:   /\.ts$/,
-        loader: 'awesome-typescript-loader'
+        loader: 'ts-loader'
       },
       {
         test:    /\.jsx*$/,
@@ -52,19 +58,19 @@ module.exports = {
         loader:  'babel-loader',
       },
       {
-        test:    /\.svg$/,
-        use: [
+        test: /\.svg$/,
+        use:  [
           {
-            loader:  'svg-sprite-loader?' + JSON.stringify({
+            loader: 'svg-sprite-loader?' + JSON.stringify({
               name:      '[name]_[hash]',
               prefixize: true,
             })
           }
         ]
       },
-      {test: /\.woff$/, loader: 'file-loader?mimetype=application/font-woff&name=fonts/[name].[ext]'},
-      {test: /\.woff2$/, loader: 'file-loader?mimetype=application/font-woff2&name=fonts/[name].[ext]'},
-      {test: /\.[ot]tf$/, loader: 'file-loader?mimetype=application/octet-stream&name=fonts/[name].[ext]'},
+      { test: /\.woff$/, loader: 'file-loader?mimetype=application/font-woff&name=fonts/[name].[ext]' },
+      { test: /\.woff2$/, loader: 'file-loader?mimetype=application/font-woff2&name=fonts/[name].[ext]' },
+      { test: /\.[ot]tf$/, loader: 'file-loader?mimetype=application/octet-stream&name=fonts/[name].[ext]' },
       {
         include: path.resolve(__dirname, 'node_modules/pixi.js'),
         loader:  'transform-loader/cacheable?brfs'

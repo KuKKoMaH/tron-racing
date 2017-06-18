@@ -12,13 +12,13 @@ export default class Help extends Component {
     return <div className={style.wrapper}>
         <div className={style.row}>
           <div className={style.icon}>
-            <Icon glyph={Icon.GLYPHS.ARROW_LEFT} />;
+            <Icon glyph="arrow_left" />;
           </div>
           <div className={style.text}> — turn left</div>
         </div>
         <div className={style.row}>
           <div className={style.icon}>
-            <Icon glyph={Icon.GLYPHS.ARROW_RIGHT} />;
+            <Icon glyph="arrow_right" />;
           </div>
           <div className={style.text}> — turn right</div>
         </div>

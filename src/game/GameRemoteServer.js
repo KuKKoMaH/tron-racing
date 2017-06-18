@@ -1,6 +1,6 @@
 import { EVENT_CREATE, EVENT_PLAYER_READY, EVENT_COUNTDOWN, EVENT_TURN, EVENT_TICK, EVENT_KILL,
-  EVENT_END, EVENT_RESTART} from './constants';
-import GameAbstractServer from './GameAbstractServer';
+  EVENT_END, EVENT_RESTART} from './server/constants';
+import GameAbstractServer from './Client.ts';
 
 export default class GameRemoteServer extends GameAbstractServer{
   constructor(peerId, connect){
