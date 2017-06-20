@@ -27,7 +27,7 @@ export default class Peers extends Events {
       if (!this._connect) {
         this._connect = conn;
         this._connect.on('close', this.onDisconnect);
-        this.emit('connect', [this._connect]);
+        this.emit('connect', this._connect);
       }
     });
 

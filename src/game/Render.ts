@@ -15,7 +15,8 @@ export default class Render {
   private walls: PIXI.Graphics; // линии стенок
   private state: any;
   private playersCount: number;
-  private players: Array<PIXI.Graphics>;
+  private playersIds: Array<string>;
+  private players: { [playerId: string]: { view: PIXI.Graphics, config: PlayerConfig } };
   private message: PIXI.Text;
 
   constructor( config: RenderConfig ) {
@@ -29,8 +30,13 @@ export default class Render {
     this.stage.addChild(this.walls);
 
     this.playersCount = config.players.length;
-    this.players = config.players.map(this.preparePlayer);
-    this.players.map(player => this.stage.addChild(player));
+    this.players = {};
+    this.playersIds = [];
+    config.players.forEach(( config ) => {
+      this.players[config.id] = this.preparePlayer(config);
+      this.playersIds.push(config.id);
+    });
+    this.playersIds.map(playerId => this.stage.addChild(this.players[playerId].view));
 
     this.state = null;
   }
@@ -52,21 +58,21 @@ export default class Render {
   }
 
   public kill( playerId: string ) {
-    // const player = this.players.find(player => player.id == playerId);
-    // const half_size = playerConfig.size / 2;
-    // player.beginFill(0xDF740C, 1);
-    // player.drawRect(-half_size, -half_size, playerConfig.size, playerConfig.size);
+    const player = this.players[playerId];
+    const half_size = player.config.size / 2;
+    player.view.beginFill(0xDF740C, 1);
+    player.view.drawRect(-half_size, -half_size, player.config.size, player.config.size);
   }
 
   public reset() {
     this.walls.clear();
-    this.players.forEach(( p, i ) => {
-      const player = this.config.players[i];
-      const half_size = player.size / 2;
-      p.beginFill(player.color, 1);
-      p.drawRect(-half_size, -half_size, player.size, player.size);
-      p.x = player.position[0];
-      p.y = player.position[1];
+    this.playersIds.forEach(( playerId ) => {
+      const player = this.players[playerId];
+      const half_size = player.config.size / 2;
+      player.view.beginFill(player.config.color, 1);
+      player.view.drawRect(-half_size, -half_size, player.config.size, player.config.size);
+      player.view.x = player.config.position[0];
+      player.view.y = player.config.position[1];
     });
     this.state = null;
     this.stage.removeChild(this.message);
@@ -74,11 +80,11 @@ export default class Render {
 
   public setState( state ) {
     for (let i = 0; i < this.playersCount; i++) {
-      const player = this.players[i];
+      const player = this.players[this.playersIds[i]];
       const playerState = state[i];
       const lastPlayerState = (this.state || state)[i];
-      player.x = playerState[0];
-      player.y = playerState[1];
+      player.view.x = playerState[0];
+      player.view.y = playerState[1];
 
       this.walls.lineStyle(this.config.lineWidth, this.config.players[i].color, 1);
       this.walls.moveTo(lastPlayerState[0], lastPlayerState[1]);
@@ -123,14 +129,14 @@ export default class Render {
     }
   }
 
-  private preparePlayer( config: PlayerConfig ): PIXI.Graphics {
+  private preparePlayer( config: PlayerConfig ) {
     const graphics = new PIXI.Graphics();
     const half_size = config.size / 2;
     graphics.beginFill(config.color, 1);
     graphics.drawRect(-half_size, -half_size, config.size, config.size);
     graphics.x = config.position[0];
     graphics.y = config.position[1];
-    return graphics;
+    return { view: graphics, config };
   }
 
   private createText( text: string ): PIXI.Text {

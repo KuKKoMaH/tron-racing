@@ -1,17 +1,18 @@
-var http = require('http');
-var express = require('express');
-var peer = require('peer');
+const http = require('http');
+const express = require('express');
+const peer = require('peer');
+const io = require('socket.io');
 
+const ExpressPeerServer = peer.ExpressPeerServer;
+const port = process.env.PORT || 5000;
 
-var ExpressPeerServer = peer.ExpressPeerServer;
-var port = process.env.PORT || 8080;
-
-var app = express();
-var server = app.listen(port);
+const app = express();
+const server = app.listen(port);
 app.use(express.static(__dirname + '/../dist'));
 app.use('/peers', ExpressPeerServer(server, { allow_discovery: true }));
+const socket = io(server);
 
-if (process.env.NODE_ENV != 'production') {
+if (process.env.NODE_ENV !== 'production') {
   var webpackDevMiddleware = require('webpack-dev-middleware');
   var webpackHotMiddleware = require('webpack-hot-middleware');
   var webpack = require('webpack');

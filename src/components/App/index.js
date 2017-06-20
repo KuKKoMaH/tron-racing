@@ -4,15 +4,15 @@ import Peers from '../../utils/Peers';
 
 import Connect from '../Connect';
 import GameSingle from '../GameSingle/GameSingle';
-// import GamePeer from '../GamePeer';
+import GamePeer from '../GamePeer/GamePeer';
 
 export default class App extends Component {
-  constructor(props) {
+  constructor( props ) {
     super(props);
 
     this.state = {
       mode: null,
-      id: null
+      id:   null
     };
 
     this.onConnect = this.onConnect.bind(this);
@@ -20,42 +20,45 @@ export default class App extends Component {
     this.returnToMenu = this.returnToMenu.bind(this);
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.peers = new Peers();
-    this.peers.getId().then(id => this.setState({id}));
-    this.peers.on('connect', connect => {
-      this.setState({mode: 'multiplayer', isServer: true, connect});
+    this.peers.getId().then(id => this.setState({ id }));
+    this.peers.on('connect', (event, connect) => {
+      this.setState({ mode: 'multiplayer', isServer: true, connect });
     });
 
     this.peers.on('disconnect', () => {
-      this.setState({mode: null, isServer: null, connect: null});
+      this.setState({ mode: null, isServer: null, connect: null });
     });
   }
 
-  onConnect(connectId){
+  onConnect( connectId ) {
     this.peers.connect(connectId).then(connect => {
-      this.setState({mode: 'multiplayer', isServer: false, connect});
+      this.setState({ mode: 'multiplayer', isServer: false, connect });
     });
   }
 
-  onSingle(){
-    this.setState({mode: 'single'});
+  onSingle() {
+    this.setState({ mode: 'single' });
   }
 
-  returnToMenu(){
+  returnToMenu() {
     this.peers.disconnect();
   }
 
-  getComponent(){
-    switch(this.state.mode){
-      // case 'multiplayer': return <GamePeer connect={this.state.connect} peerId={this.state.id}
-      //                                      isServer={this.state.isServer} onMenu={this.returnToMenu}/>;
-      case 'single': return <GameSingle onMenu={this.returnToMenu}/>;
-      default: return <Connect peerId={this.state.id} onConnect={this.onConnect} onSingle={this.onSingle}/>;
+  getComponent() {
+    switch (this.state.mode) {
+      case 'multiplayer':
+        return <GamePeer connect={this.state.connect} peerId={this.state.id}
+                         isServer={this.state.isServer} onMenu={this.returnToMenu}/>;
+      case 'single':
+        return <GameSingle onMenu={this.returnToMenu}/>;
+      default:
+        return <Connect peerId={this.state.id} onConnect={this.onConnect} onSingle={this.onSingle}/>;
     }
   }
 
-  render(){
+  render() {
     return (
       <div className={style.wrapper}>
         <div className={style.content}>

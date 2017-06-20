@@ -22,6 +22,7 @@ export default class Server extends Events {
   private framerate: number;
   private _tickTime: number;
   private loop: number; // таймер тиков
+  private countdownTimer: number;
   private winner: Player;
 
   constructor( config: ServerConfig ) {
@@ -74,13 +75,14 @@ export default class Server extends Events {
       this.loop = setInterval(() => this.tick(), this._tickTime);
     } else {
       this.emit(c.EVENT_COUNTDOWN, delay);
-      setTimeout(() => this.countdown(delay - 1), 1000);
+      this.countdownTimer = setTimeout(() => this.countdown(delay - 1), 1000);
     }
   }
 
   end() {
     this.emit(c.EVENT_END, this.winner ? this.winner.getConfig() : null);
     clearTimeout(this.loop);
+    this.loop = null;
   }
 
   reset() {
@@ -88,6 +90,11 @@ export default class Server extends Events {
     this.alivePlayers.forEach(playerId => this.players[playerId].reset());
     this.walls.reset();
     this.winner = null;
+    clearTimeout(this.countdownTimer);
+    clearTimeout(this.loop);
+    this.loop = null;
+    this.countdownTimer = null;
+    this.emit(c.EVENT_RESTART);
   }
 
   turn( playerId: string, direction: TurnDirection ) {

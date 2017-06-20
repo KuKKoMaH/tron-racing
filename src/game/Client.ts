@@ -21,8 +21,9 @@ export default class Client extends Events {
     this.server.on(c.EVENT_CREATE, ( event, config ) => this.create(config));
     this.server.on(c.EVENT_COUNTDOWN, ( event, value ) => this.render.countdown(value));
     this.server.on(c.EVENT_TICK, ( event, state ) => this.render.setState(state));
-    this.server.on(c.EVENT_KILL, playerId => this.render.kill(playerId));
-    this.server.on(c.EVENT_END, player => this.render.end(player))
+    this.server.on(c.EVENT_KILL, ( event, playerId ) => this.render.kill(playerId));
+    this.server.on(c.EVENT_END, ( event, player ) => this.render.end(player));
+    this.server.on(c.EVENT_RESTART, ( event, player ) => this.render.reset());
   }
 
   public destroy() {
@@ -38,10 +39,6 @@ export default class Client extends Events {
     });
   }
 
-  public reset() {
-    this.server.reset();
-  }
-
   private onKeyDown( e ) {
     switch (e.keyCode) {
       case 37: // left arrow
@@ -49,6 +46,14 @@ export default class Client extends Events {
         this.server.turn(TurnDirection.Left);
         break;
       case 39: // right arrow
+        e.preventDefault();
+        this.server.turn(TurnDirection.Right);
+        break;
+      case 65: // A
+        e.preventDefault();
+        this.server.turn(TurnDirection.Left);
+        break;
+      case 68: // D
         e.preventDefault();
         this.server.turn(TurnDirection.Right);
         break;

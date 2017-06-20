@@ -6,12 +6,10 @@ import Menu from '../Menu';
 
 export default class GamePeer extends Component {
   static propTypes = {
-    peerId: PropTypes.string,
-    onMenu: PropTypes.func,
-  };
-
-  static defaultProps = {
-    peerId: 'player'
+    connect:  PropTypes.object.isRequired,
+    isServer: PropTypes.bool.isRequired,
+    peerId:   PropTypes.string.isRequired,
+    onMenu:   PropTypes.func
   };
 
   constructor( props ) {
@@ -22,14 +20,14 @@ export default class GamePeer extends Component {
     };
 
     this.onRestart = this.onRestart.bind(this);
-  };
+  }
 
   componentDidMount() {
     Promise.all([
-      import('game/ServerSingle.ts'),
+      this.props.isServer ? import('game/peer/PeerServer.ts') : import('game/peer/PeerClient.ts'),
       import('game/Client.ts'),
     ]).then(( [Server, Client] ) => {
-      this.server = new Server.default();
+      this.server = new Server.default(this.props.peerId, this.props.connect);
       this.client = new Client.default(this.server);
 
       this.client.on(EVENT_CREATE, () => {
@@ -39,11 +37,11 @@ export default class GamePeer extends Component {
       this.client.on(EVENT_END, () => this.setState({ ended: true }));
       this.client.on(EVENT_START, () => this.setState({ ended: false }));
     });
-  };
+  }
 
   componentWillUnmount() {
     this.client.destroy();
-  };
+  }
 
   onRestart() {
     this.server.restart();
@@ -54,7 +52,12 @@ export default class GamePeer extends Component {
       <div>
         <div className={style.field} ref="gameCanvas"/>
         <div className={style.menu}/>
-        <Menu visible={this.state.ended} onRestart={this.onRestart} onMenu={this.props.onMenu}/>
+        <Menu
+          visible={this.state.ended}
+          canRestart={this.props.isServer}
+          onRestart={this.onRestart}
+          onMenu={this.props.onMenu}
+        />
       </div>
     );
   }

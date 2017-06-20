@@ -51,10 +51,10 @@ export default class Walls {
   }
 
   private playerUpdate( player: Player, id: string ) {
-    const hFrom = Math.min(player.position[0], player.lastPosition[0]) - this.halfLineWidth;
-    const hTo = Math.max(player.position[0], player.lastPosition[0]) + this.halfLineWidth;
-    const vFrom = Math.min(player.position[1], player.lastPosition[1]) - this.halfLineWidth;
-    const vTo = Math.max(player.position[1], player.lastPosition[1]) + this.halfLineWidth;
+    const hFrom = Math.max(Math.min(player.position[0], player.lastPosition[0]) - this.halfLineWidth, 0);
+    const hTo = Math.min(Math.max(player.position[0], player.lastPosition[0]) + this.halfLineWidth, this.width);
+    const vFrom = Math.max(Math.min(player.position[1], player.lastPosition[1]) - this.halfLineWidth, 0);
+    const vTo = Math.min(Math.max(player.position[1], player.lastPosition[1]) + this.halfLineWidth, this.height);
     let i, j;
     for (i = hFrom; i <= hTo; i++) {
       for (j = vFrom; j <= vTo; j++) {
